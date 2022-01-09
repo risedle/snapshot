@@ -1,30 +1,8 @@
 import { BigNumber, ethers } from "ethers";
-import dotenv from "dotenv";
-import cron from "node-cron";
-import * as Sentry from "@sentry/node";
-import { createConnection, Connection } from "typeorm";
+import { Connection } from "typeorm";
 import { VaultSnapshot } from "../entities/VaultSnapshot";
 
-// Load environment variables
-dotenv.config();
-
-// Initialize sentry
-Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    tracesSampleRate: 0.5,
-});
-
-Sentry.setTag("app_name", process.env.SENTRY_APP_NAME);
-
-// Read data from the contract
-const RISE_TOKEN_VAULT_INTERFACE = new ethers.utils.Interface([
-    // Read only
-    "function getBorrowRatePerSecondInEther() external view returns (uint256)",
-    "function getSupplyRatePerSecondInEther() external view returns (uint256)",
-    "function getUtilizationRateInEther() external view returns (uint256)",
-    "function totalOutstandingDebt() external view returns (uint256)",
-    "function getTotalAvailableCash() external view returns (uint256)",
-]);
+import abi from "./abi";
 
 async function snapshot(
     vaultContractAddress: string,
@@ -34,7 +12,7 @@ async function snapshot(
     // Initialize the contract
     const riseTokenVaultContract = new ethers.Contract(
         vaultContractAddress,
-        RISE_TOKEN_VAULT_INTERFACE,
+        abi,
         provider
     );
 
@@ -100,34 +78,6 @@ async function snapshot(
     await repository.save(snapshot);
 }
 
-createConnection()
-    .then((connection) => {
-        const task = cron.schedule("* * * * *", async () => {
-            // Initialize provider
-            const provider = new ethers.providers.JsonRpcProvider(
-                process.env.RPC_URL
-            );
-
-            // Contract addresses
-            const vaultContractAddresses = process.env.VAULT_CONTRACTS;
-            const addresses: Array<string> = vaultContractAddresses.split(",");
-            for (let i = 0; i < addresses.length; i++) {
-                try {
-                    console.log("Snapshoting", addresses[i], "...");
-                    await snapshot(addresses[i], provider, connection);
-                    console.log("Snapshoting", addresses[i], "...DONE");
-                } catch (e) {
-                    console.error("Failed to run snapshot", addresses[i], e);
-                    Sentry.captureException(e);
-                }
-            }
-        });
-
-        process.on("SIGTERM", () => {
-            console.info("SIGTERM signal received.");
-            console.log("Stopping cron job ...");
-            task.stop();
-            console.log("Cronjob stopped ...");
-        });
-    })
-    .catch((error) => console.log(error));
+export default {
+    snapshot: snapshot,
+};
