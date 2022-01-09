@@ -1,22 +1,23 @@
 {
-  "name": "snapshot",
-  "version": "1.0.0",
-  "description": "Risedle's snapshot services",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/risedle/snapshot.git"
-  },
-  "author": "Bayu <bayu@risedle.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/risedle/snapshot/issues"
-  },
-  "homepage": "https://github.com/risedle/snapshot#readme",
-  "devDependencies": {
-    "prettier": "^2.5.1"
-  }
+    "name": "snapshot",
+    "version": "1.0.0",
+    "description": "Risedle's snapshot services",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/risedle/snapshot.git"
+    },
+    "author": "Bayu <bayu@risedle.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/risedle/snapshot/issues"
+    },
+    "homepage": "https://github.com/risedle/snapshot#readme",
+    "devDependencies": {
+        "prettier": "^2.5.1",
+        "typescript": "^4.5.4"
+    }
 }
