@@ -44,13 +44,13 @@ const leveragedTokenTarget = {
 
 createConnection()
     .then((connection) => {
-        const task = cron.schedule("* * * * *", async () => {
-            // Initialize provider
-            const provider = new ethers.providers.JsonRpcProvider(
-                process.env.RPC_URL
-            );
-            const network = process.env.NETWORK;
+        // Initialize provider
+        const provider = new ethers.providers.JsonRpcProvider(
+            process.env.RPC_URL
+        );
+        const network = process.env.NETWORK;
 
+        const vaultTask = cron.schedule("* * * * *", async () => {
             for (let i = 0; i < vaultTarget[network].length; i++) {
                 const vaultContractAddress = vaultTarget[network][i];
                 try {
@@ -74,7 +74,8 @@ createConnection()
                     Sentry.captureException(e);
                 }
             }
-
+        });
+        const leveragedTokenTask = cron.schedule("* * * * *", async () => {
             for (let i = 0; i < leveragedTokenTarget[network].length; i++) {
                 const vault = leveragedTokenTarget[network][i].vault;
                 const token = leveragedTokenTarget[network][i].leveragedToken;
@@ -100,7 +101,8 @@ createConnection()
         process.on("SIGTERM", () => {
             console.info("SIGTERM signal received.");
             console.log("Stopping cron job ...");
-            task.stop();
+            vaultTask.stop();
+            leveragedTokenTask.stop();
             console.log("Cronjob stopped ...");
         });
     })
