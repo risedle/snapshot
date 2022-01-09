@@ -22,12 +22,12 @@ export class VaultSnapshot {
     @Column({ type: "float" })
     supplyAPY: number;
 
-    @Column({ type: "integer" })
+    @Column({ type: "float" })
     totalAvailableCash: number;
 
     @Column({ type: "float" })
     utilizationRate: number;
 
-    @Column({ type: "integer" })
+    @Column({ type: "float" })
     totalOutstandingDebt: number;
 }
