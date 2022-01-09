@@ -1,2 +1,5 @@
 # Ignore secret files
 fly-wireguard-risedle.conf
+
+# Ignore node_modules
+node_modules/
