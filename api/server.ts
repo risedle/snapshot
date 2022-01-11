@@ -16,6 +16,10 @@ createConnection().then((connection) => {
         return res.send({ message: "OK" });
     });
 
+    app.get("/health", async function (req: Request, res: Response) {
+        return res.send({ message: "OK" });
+    });
+
     // Get daily data of vaults
     app.get(
         "/v1/vaults/daily/:id",
