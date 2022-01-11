@@ -42,6 +42,10 @@ Set the secrets:
 
     flyctl secrets --app snapshot-kovan-workers set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
 
+    flyctl secrets --app snapshot-kovan-api set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
+
 Run the following command to deploy:
 
     flyctl deploy --app snapshot-kovan-workers --config snapshot-kovan-workers.toml .
+
+    flyctl deploy --app snapshot-kovan-api --config snapshot-kovan-api.toml .
