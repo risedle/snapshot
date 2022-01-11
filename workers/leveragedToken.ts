@@ -54,7 +54,7 @@ async function snapshot(
     console.log("DEBUG: leverageRatio", leverageRatio);
 
     // Get nav price
-    const navBN: BigNumber = await riseTokenVaultContract.getDebtPerRiseToken(
+    const navBN: BigNumber = await riseTokenVaultContract.getNAV(
         leveragedTokenContractAddress
     );
     const nav = parseFloat(ethers.utils.formatUnits(navBN, debtDecimals));
