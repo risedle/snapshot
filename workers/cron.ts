@@ -50,7 +50,7 @@ createConnection()
         );
         const network = process.env.NETWORK;
 
-        const vaultTask = cron.schedule("* * * * *", async () => {
+        const vaultTask = cron.schedule("*/5 * * * *", async () => {
             for (let i = 0; i < vaultTarget[network].length; i++) {
                 const vaultContractAddress = vaultTarget[network][i];
                 try {
@@ -75,7 +75,7 @@ createConnection()
                 }
             }
         });
-        const leveragedTokenTask = cron.schedule("* * * * *", async () => {
+        const leveragedTokenTask = cron.schedule("*/5 * * * *", async () => {
             for (let i = 0; i < leveragedTokenTarget[network].length; i++) {
                 const vault = leveragedTokenTarget[network][i].vault;
                 const token = leveragedTokenTarget[network][i].leveragedToken;
