@@ -29,3 +29,19 @@ Then follow step by step below:
 2. Generate the migration file:
    `npm run typeorm migration:generate -- -n MIGRATIONNAME`
 3. Run the migrations: `npm run typeorm migration:run`
+
+## Deployment
+
+This bot is deployed to [fly.io](https://fly.io/docs/introduction/).
+
+Create new app:
+
+    flyctl launch
+
+Set the secrets:
+
+    flyctl secrets --app snapshot-kovan-workers set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
+
+Run the following command to deploy:
+
+    flyctl deploy --app snapshot-kovan-workers --config snapshot-kovan-workers.toml .

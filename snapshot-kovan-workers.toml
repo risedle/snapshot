@@ -1,0 +1,15 @@
+# fly.toml file generated for snapshot-kovan-workers on 2022-01-11T14:14:30+07:00
+
+app = "snapshot-kovan-workers"
+
+kill_signal = "SIGTERM"
+kill_timeout = 5
+processes = []
+
+[env]
+  SENTRY_APP_NAME="snapshot-kovan-workers"
+  NETWORK="kovan"
+
+[experimental]
+cmd = ["node", "-r", "ts-node/register", "workers/cron.ts"]
+entrypoint = ["node", "-r", "ts-node/register", "workers/cron.ts"]
