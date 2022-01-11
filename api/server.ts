@@ -227,8 +227,7 @@ createConnection().then((connection) => {
                 }, "data")
                 .where("data.row_number = :rowNumber", { rowNumber: 1 })
                 .getRawMany();
-            console.log(results);
-            return res.send([]);
+            return res.send(results);
         }
     );
 
@@ -327,7 +326,7 @@ createConnection().then((connection) => {
                             "snapshot.contractAddress as address",
                             "snapshot.collateralPerLeveragedToken as collateral_per_leveraged_token",
                             "snapshot.debtPerLeveragedToken as debt_per_leveraged_token",
-                            "snapshot.leverage_ratio as leverage_ratio",
+                            "snapshot.leverageRatio as leverage_ratio",
                             "snapshot.nav as nav",
                             "date_trunc('hour', timestamp) as timestamp",
                             "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number",
@@ -365,7 +364,7 @@ createConnection().then((connection) => {
                             "snapshot.contractAddress as address",
                             "snapshot.collateralPerLeveragedToken as collateral_per_leveraged_token",
                             "snapshot.debtPerLeveragedToken as debt_per_leveraged_token",
-                            "snapshot.leverage_ratio as leverage_ratio",
+                            "snapshot.leverageRatio as leverage_ratio",
                             "snapshot.nav as nav",
                             "date_trunc('hour', timestamp) as timestamp",
                             "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number",
@@ -403,7 +402,7 @@ createConnection().then((connection) => {
                             "snapshot.contractAddress as address",
                             "snapshot.collateralPerLeveragedToken as collateral_per_leveraged_token",
                             "snapshot.debtPerLeveragedToken as debt_per_leveraged_token",
-                            "snapshot.leverage_ratio as leverage_ratio",
+                            "snapshot.leverageRatio as leverage_ratio",
                             "snapshot.nav as nav",
                             "date_trunc('hour', timestamp) as timestamp",
                             "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number",
@@ -418,7 +417,7 @@ createConnection().then((connection) => {
                 }, "data")
                 .where("data.row_number = :rowNumber", { rowNumber: 1 })
                 .getRawMany();
-            return res.send([]);
+            return res.send(results);
         }
     );
 
