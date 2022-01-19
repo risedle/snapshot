@@ -13,6 +13,7 @@ import { getVaultsThreeMonths } from "./getVaultsThreeMonths";
 import { getVaultsYearly } from "./getVaultsYearly";
 import { getLeveragedTokensDaily } from "./getLeveragedTokensDaily";
 import { getLeveragedTokensWeekly } from "./getLeveragedTokensWeekly";
+import { getLeveragedTokensMonthly } from "./getLeveragedTokensMonthly";
 
 // create typeorm connection
 createConnection().then((connection) => {
@@ -105,36 +106,10 @@ createConnection().then((connection) => {
     app.get(
         "/v1/leveragedTokens/monthly/:id",
         async function (req: Request, res: Response) {
-            const results = await connection
-                .createQueryBuilder()
-                .select([
-                    "data.timestamp",
-                    "data.collateral_per_leveraged_token",
-                    "data.debt_per_leveraged_token",
-                    "data.leverage_ratio",
-                    "data.nav",
-                ])
-                .from((subQuery) => {
-                    return subQuery
-                        .select([
-                            "snapshot.contractAddress as address",
-                            "snapshot.collateralPerLeveragedToken as collateral_per_leveraged_token",
-                            "snapshot.debtPerLeveragedToken as debt_per_leveraged_token",
-                            "snapshot.leverageRatio as leverage_ratio",
-                            "snapshot.nav as nav",
-                            "date_trunc('hour', timestamp) as timestamp",
-                            "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number",
-                        ])
-                        .from(LeveragedTokenSnapshot, "snapshot")
-                        .where("snapshot.contractAddress = :contractAddress", {
-                            contractAddress: req.params.id,
-                        })
-                        .andWhere(
-                            "snapshot.timestamp >= NOW() - INTERVAL '30 DAY'"
-                        );
-                }, "data")
-                .where("data.row_number = :rowNumber", { rowNumber: 1 })
-                .getRawMany();
+            const results = await getLeveragedTokensMonthly(
+                connection,
+                req.params.id
+            );
             return res.send(results);
         }
     );
