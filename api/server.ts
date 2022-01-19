@@ -4,6 +4,7 @@ import { createConnection } from "typeorm";
 import { VaultSnapshot } from "../entities/VaultSnapshot";
 import { LeveragedTokenSnapshot } from "../entities/LeveragedTokenSnapshot";
 import morgan from "morgan";
+import { getVaultsDaily } from "./getVaultsDaily";
 
 // create typeorm connection
 createConnection().then((connection) => {
@@ -24,41 +25,7 @@ createConnection().then((connection) => {
     app.get(
         "/v1/vaults/daily/:id",
         async function (req: Request, res: Response) {
-            const results = await connection
-                .createQueryBuilder()
-                .select([
-                    "data.timestamp",
-                    "data.borrow_apy",
-                    "data.supply_apy",
-                    "data.utilization_rate",
-                    "data.total_available_cash",
-                    "data.total_outstanding_debt",
-                ])
-                .from((subQuery) => {
-                    return subQuery
-                        .select([
-                            "vaultSnapshot.contractAddress as address",
-                            "vaultSnapshot.borrowAPY as borrow_apy",
-                            "vaultSnapshot.supplyAPY as supply_apy",
-                            "vaultSnapshot.utilizationRate as utilization_rate",
-                            "vaultSnapshot.totalAvailableCash as total_available_cash",
-                            "vaultSnapshot.totalOutstandingDebt as total_outstanding_debt",
-                            "date_trunc('hour', timestamp) as timestamp",
-                            "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number",
-                        ])
-                        .from(VaultSnapshot, "vaultSnapshot")
-                        .where(
-                            "vaultSnapshot.contractAddress = :contractAddress",
-                            {
-                                contractAddress: req.params.id,
-                            }
-                        )
-                        .andWhere(
-                            "vaultSnapshot.timestamp >= NOW() - INTERVAL '1 DAY'"
-                        );
-                }, "data")
-                .where("data.row_number = :rowNumber", { rowNumber: 1 })
-                .getRawMany();
+            const results = await getVaultsDaily(connection, req.params.id);
             return res.send(results);
         }
     );
