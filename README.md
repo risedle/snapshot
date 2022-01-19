@@ -30,6 +30,17 @@ Then follow step by step below:
    `npm run typeorm migration:generate -- -n MIGRATIONNAME`
 3. Run the migrations: `npm run typeorm migration:run`
 
+## Running API locally
+
+Copy `.env.example` to `.env` and edit the content.
+
+Make sure you setup the
+[Fly.io wireguard](https://fly.io/docs/reference/private-networking/#private-network-vpn).
+
+Then run the following command:
+
+    node -r ts-node/register api/server.ts
+
 ## Deployment
 
 This bot is deployed to [fly.io](https://fly.io/docs/introduction/).
