@@ -1,20 +1,10 @@
 import { Connection } from "typeorm";
 import { VaultSnapshot } from "../entities/VaultSnapshot";
 
-export const getVaultsYearly = async (
-    conn: Connection,
-    vaultAddress: string
-) => {
+export const getVaultsYearly = async (conn: Connection, vaultAddress: string) => {
     const results = await conn
         .createQueryBuilder()
-        .select([
-            "data.timestamp_truncated as timestamp",
-            "data.borrow_apy",
-            "data.supply_apy",
-            "data.utilization_rate",
-            "data.total_available_cash",
-            "data.total_outstanding_debt",
-        ])
+        .select(["data.timestamp_truncated as timestamp", "data.borrow_apy", "data.supply_apy", "data.utilization_rate", "data.total_available_cash", "data.total_outstanding_debt"])
         .from((subQuery) => {
             return subQuery
                 .select([
@@ -31,9 +21,7 @@ export const getVaultsYearly = async (
                 .where("vaultSnapshot.contractAddress = :contractAddress", {
                     contractAddress: vaultAddress,
                 })
-                .andWhere(
-                    "vaultSnapshot.timestamp >= NOW() - INTERVAL '1 YEAR'"
-                );
+                .andWhere("vaultSnapshot.timestamp >= NOW() - INTERVAL '1 YEAR'");
         }, "data")
         .where("data.row_number = :rowNumber", { rowNumber: 1 })
         .getRawMany();

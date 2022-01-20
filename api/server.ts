@@ -1,8 +1,6 @@
 import express from "express";
 import { Request, Response } from "express";
 import { createConnection } from "typeorm";
-import { VaultSnapshot } from "../entities/VaultSnapshot";
-import { LeveragedTokenSnapshot } from "../entities/LeveragedTokenSnapshot";
 import morgan from "morgan";
 
 // APIs
@@ -16,6 +14,7 @@ import { getLeveragedTokensWeekly } from "./getLeveragedTokensWeekly";
 import { getLeveragedTokensMonthly } from "./getLeveragedTokensMonthly";
 import { getLeveragedTokensThreeMonths } from "./getLeveragedTokensThreeMonths";
 import { getLeveragedTokensYearly } from "./getLeveragedTokensYearly";
+import { getMarketsData } from "./getMarketsData";
 
 // create typeorm connection
 createConnection().then((connection) => {
@@ -139,6 +138,8 @@ createConnection().then((connection) => {
             return res.send(results);
         }
     );
+
+    app.get("/v1/markets", getMarketsData);
 
     // start express server
     console.log("Starting server :3000 ...");
