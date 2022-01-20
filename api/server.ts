@@ -25,7 +25,7 @@ createConnection().then((connection) => {
     app.use(morgan("combined"));
     app.use(
         cors({
-            origin: ["https://.risedle.com", "http://localhost:"],
+            origin: ["https://.risedle.com", "http://localhost:6006", "http://localhost:3000"],
         })
     );
 
