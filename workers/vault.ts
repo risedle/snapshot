@@ -2,68 +2,46 @@ import { BigNumber, ethers } from "ethers";
 import { Connection } from "typeorm";
 import { VaultSnapshot } from "../entities/VaultSnapshot";
 
-import abi from "./abi";
+import { VaultABI } from "./abi";
 
-async function snapshot(
-    vaultContractAddress: string,
-    provider: ethers.providers.JsonRpcProvider,
-    connection: Connection
-) {
+async function snapshot(vaultContractAddress: string, provider: ethers.providers.JsonRpcProvider, connection: Connection) {
     // Initialize the contract
-    const riseTokenVaultContract = new ethers.Contract(
-        vaultContractAddress,
-        abi,
-        provider
-    );
+    const riseTokenVaultContract = new ethers.Contract(vaultContractAddress, VaultABI, provider);
 
     // Get supply APY
-    const supplyRatePerSecondInEther: BigNumber =
-        await riseTokenVaultContract.getSupplyRatePerSecondInEther();
-    const supplyRatePerSecond = parseFloat(
-        ethers.utils.formatEther(supplyRatePerSecondInEther)
-    );
+    const supplyRatePerSecondInEther: BigNumber = await riseTokenVaultContract.getSupplyRatePerSecondInEther();
+    const supplyRatePerSecond = parseFloat(ethers.utils.formatEther(supplyRatePerSecondInEther));
     const secondsPerDay = 86400;
     const daysPerYear = 365;
-    const supplyAPY =
-        (Math.pow(supplyRatePerSecond * secondsPerDay + 1, daysPerYear) - 1) *
-        100;
+    const supplyAPY = (Math.pow(supplyRatePerSecond * secondsPerDay + 1, daysPerYear) - 1) * 100;
     console.log("DEBUG: supplyAPY", supplyAPY);
 
     // Get borrow APY
-    const borrowRatePerSecondInEther: BigNumber =
-        await riseTokenVaultContract.getBorrowRatePerSecondInEther();
-    const borrowRatePerSecond = parseFloat(
-        ethers.utils.formatEther(borrowRatePerSecondInEther)
-    );
-    const borrowAPY =
-        (Math.pow(borrowRatePerSecond * secondsPerDay + 1, daysPerYear) - 1) *
-        100;
+    const borrowRatePerSecondInEther: BigNumber = await riseTokenVaultContract.getBorrowRatePerSecondInEther();
+    const borrowRatePerSecond = parseFloat(ethers.utils.formatEther(borrowRatePerSecondInEther));
+    const borrowAPY = (Math.pow(borrowRatePerSecond * secondsPerDay + 1, daysPerYear) - 1) * 100;
     console.log("DEBUG: borrowAPY", borrowAPY);
 
     // Get utilization rate
-    const utilizationRateInEther: BigNumber =
-        await riseTokenVaultContract.getUtilizationRateInEther();
-    const utilizationRate = parseFloat(
-        ethers.utils.formatEther(utilizationRateInEther)
-    );
+    const utilizationRateInEther: BigNumber = await riseTokenVaultContract.getUtilizationRateInEther();
+    const utilizationRate = parseFloat(ethers.utils.formatEther(utilizationRateInEther));
     const utilizationRatePercentage = utilizationRate * 100;
     console.log("DEBUG: utilizationRatePercentage", utilizationRatePercentage);
 
     // Get total outstanding debt
-    const totalOutstandingDebt: BigNumber =
-        await riseTokenVaultContract.totalOutstandingDebt();
-    const totalOutstandingDebtFloat = parseFloat(
-        ethers.utils.formatUnits(totalOutstandingDebt, 6)
-    );
+    const totalOutstandingDebt: BigNumber = await riseTokenVaultContract.totalOutstandingDebt();
+    const totalOutstandingDebtFloat = parseFloat(ethers.utils.formatUnits(totalOutstandingDebt, 6));
     console.log("DEBUG: totalOutstandingDebtFloat", totalOutstandingDebtFloat);
 
     // Get total outstanding debt
-    const totalAvailableCash: BigNumber =
-        await riseTokenVaultContract.getTotalAvailableCash();
-    const totalAvailableCashFloat = parseFloat(
-        ethers.utils.formatUnits(totalAvailableCash, 6)
-    );
+    const totalAvailableCash: BigNumber = await riseTokenVaultContract.getTotalAvailableCash();
+    const totalAvailableCashFloat = parseFloat(ethers.utils.formatUnits(totalAvailableCash, 6));
     console.log("DEBUG: totalAvailableCashFloat", totalAvailableCashFloat);
+
+    // Get max capacity
+    const maxTotalDeposit: BigNumber = await riseTokenVaultContract.maxTotalDeposit();
+    const maxTotalDepositFloat = parseFloat(ethers.utils.formatUnits(maxTotalDeposit, 6));
+    console.log("DEBUG: maxTotalDepositFloat", maxTotalDepositFloat);
 
     // Connect to postgresql
     const repository = connection.getRepository(VaultSnapshot);
@@ -75,6 +53,7 @@ async function snapshot(
     snapshot.totalAvailableCash = totalAvailableCashFloat;
     snapshot.totalOutstandingDebt = totalOutstandingDebtFloat;
     snapshot.utilizationRate = utilizationRatePercentage;
+    snapshot.maxTotalDeposit = maxTotalDepositFloat;
     await repository.save(snapshot);
 }
 

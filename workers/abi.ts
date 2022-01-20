@@ -1,19 +1,24 @@
 import { ethers } from "ethers";
 
 // Read data from the contract
-const abi = new ethers.utils.Interface([
+export const VaultABI = new ethers.utils.Interface([
     // Vaults
     "function getBorrowRatePerSecondInEther() external view returns (uint256)",
     "function getSupplyRatePerSecondInEther() external view returns (uint256)",
     "function getUtilizationRateInEther() external view returns (uint256)",
     "function totalOutstandingDebt() external view returns (uint256)",
     "function getTotalAvailableCash() external view returns (uint256)",
+    "function maxTotalDeposit() external view returns (uint256)",
 
     // Leveraged token
     "function getCollateralPerRiseToken(address token) external view returns (uint256)",
     "function getDebtPerRiseToken(address token) external view returns (uint256)",
     "function getLeverageRatioInEther(address token) external view returns (uint256)",
     "function getNAV(address token) external view returns (uint256)",
+    "function getMetadata(address token) external view returns (bool isETH, address token, address collateral, address oracleContract, address swapContract, uint256 maxSwapSlippageInEther, uint256 initialPrice, uint256 feeInEther, uint256 totalCollateralPlusFee,  uint256 totalPendingFees, uint256 minLeverageRatioInEther, uint256 maxLeverageRatioInEther, uint256 maxRebalancingValue, uint256 rebalancingStepInEther, uint256 maxTotalCollateral)",
+    "function getOutstandingDebt(address token) external view returns (uint256)",
 ]);
 
-export default abi;
+export const ERC20ABI = new ethers.utils.Interface(["function totalSupply() external view returns (uint256)"]);
+
+export const OracleABI = new ethers.utils.Interface(["function getPrice() external view returns (uint256)"]);
