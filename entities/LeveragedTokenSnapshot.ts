@@ -1,9 +1,4 @@
-import {
-    Column,
-    Entity,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 
 @Entity()
 export class LeveragedTokenSnapshot {
@@ -12,6 +7,9 @@ export class LeveragedTokenSnapshot {
 
     @Column()
     contractAddress: string;
+
+    @Column({ nullable: true })
+    vaultContractAddress: string;
 
     @CreateDateColumn()
     timestamp: Date;
@@ -27,4 +25,22 @@ export class LeveragedTokenSnapshot {
 
     @Column({ type: "float" })
     nav: number;
+
+    @Column({ type: "float", nullable: true })
+    totalSupply: number;
+
+    @Column({ type: "float", nullable: true })
+    maxTotalCollateral: number;
+
+    @Column({ type: "float", nullable: true })
+    totalCollateralPlusFee: number;
+
+    @Column({ type: "float", nullable: true })
+    totalPendingFees: number;
+
+    @Column({ type: "float", nullable: true })
+    outstandingDebt: number;
+
+    @Column({ type: "float", nullable: true })
+    collateralPrice: number;
 }

@@ -1,9 +1,4 @@
-import {
-    Column,
-    Entity,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 
 @Entity()
 export class VaultSnapshot {
@@ -30,4 +25,7 @@ export class VaultSnapshot {
 
     @Column({ type: "float" })
     totalOutstandingDebt: number;
+
+    @Column({ type: "float", nullable: true })
+    maxTotalDeposit: number;
 }
