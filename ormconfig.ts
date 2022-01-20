@@ -7,4 +7,7 @@ export default {
         migrationsDir: "migrations",
         entitiesDir: "entities",
     },
+    cache: {
+        duration: 60000, // Cache the query for 60s
+    },
 };
