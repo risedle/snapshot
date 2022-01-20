@@ -2,6 +2,7 @@ import express from "express";
 import { Request, Response } from "express";
 import { createConnection } from "typeorm";
 import morgan from "morgan";
+import cors from "cors";
 
 // APIs
 import { getVaultsDaily } from "./getVaultsDaily";
@@ -22,6 +23,11 @@ createConnection().then((connection) => {
     const app = express();
     app.use(express.json());
     app.use(morgan("combined"));
+    app.use(
+        cors({
+            origin: ["https://.risedle.com", "http://localhost:"],
+        })
+    );
 
     app.get("/", async function (req: Request, res: Response) {
         return res.send({ message: "OK" });
