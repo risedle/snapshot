@@ -1,13 +1,5 @@
 import { Connection } from "typeorm";
 
-const MarketsMetadata = {
-    "0xc4676f88663360155c2bc6d2A482E34121a50b3b": {
-        title: "ETHRISE",
-        subtitle: "ETH Leverage Market",
-        description: "You can Leverage your ETH without risk of liquidation or earn yield for your idle USDC",
-    },
-};
-
 export const getMarketsData = async (conn: Connection) => {
     const markets = await conn.query(`
     WITH latest_data AS (
@@ -81,10 +73,9 @@ export const getMarketsData = async (conn: Connection) => {
     const totalAUM = markets.map((market) => market.leveraged_token_market_cap).reduce((total, marketCap) => total + marketCap, 0);
     // NOTE: This TVL calculation assume that one token one vault; TVL will inflated when there is one vault with two tokens
     const totalTVL = markets.map((market) => market.leveraged_token_market_cap + market.vault_total_available_cash + market.vault_total_outstanding_debt).reduce((total, tvlPerMarket) => total + tvlPerMarket, 0);
-    const marketsWithMetadata = markets.map((market) => ({ title: MarketsMetadata[market.leveraged_token_address].title, subtitle: MarketsMetadata[market.leveraged_token_address].subtitle, description: MarketsMetadata[market.leveraged_token_address].description, ...market }));
     return {
         aum: totalAUM,
         tvl: totalTVL,
-        markets: marketsWithMetadata,
+        markets: markets,
     };
 };
