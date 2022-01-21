@@ -63,6 +63,7 @@ export const getMarketsData = async (conn: Connection) => {
           ld.leveraged_token_total_collateral,
           ld.leveraged_token_collateral_price,
           ld.leveraged_token_max_total_collateral,
+          ld.leveraged_token_total_supply,
           vd.vault_total_available_cash,
           vd.vault_total_outstanding_debt,
           vd.vault_max_total_deposit,
