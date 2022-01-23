@@ -67,7 +67,8 @@ export const getMarketData = async (conn: Connection, leveragedTokenAddress: str
           vd.vault_total_outstanding_debt,
           vd.vault_max_total_deposit,
           vd.vault_borrow_apy,
-          vd.vault_supply_apy
+          vd.vault_supply_apy,
+          vd.vault_utilization_rate
       FROM latest_data as ld
       LEFT JOIN past_data as pd
       ON ld.leveraged_token_address = pd.leveraged_token_address
