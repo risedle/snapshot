@@ -14,6 +14,9 @@ export const getMarketData = async (conn: Connection, leveragedTokenAddress: str
           (lts."nav" * lts."totalSupply") as leveraged_token_market_cap,
           lts."maxTotalCollateral" as leveraged_token_max_total_collateral,
           lts."collateralPrice" as leveraged_token_collateral_price,
+          lts."leverageRatio" as leveraged_token_leverage_ratio,
+          lts."collateralPerLeveragedToken" as leveraged_token_collateral_per_leveraged_token,
+          lts."debtPerLeveragedToken" as leveraged_token_debt_per_leveraged_token,
           ROW_NUMBER() OVER (PARTITION BY lts."contractAddress" ORDER BY lts."timestamp" DESC) AS rn
         FROM public.leveraged_token_snapshot AS lts
         WHERE lts."timestamp" >= NOW() - INTERVAL '30 DAY' AND lts."contractAddress" = $1
@@ -57,6 +60,9 @@ export const getMarketData = async (conn: Connection, leveragedTokenAddress: str
           ld.leveraged_token_collateral_price,
           ld.leveraged_token_max_total_collateral,
           ld.leveraged_token_total_supply,
+          ld.leveraged_token_leverage_ratio as leverage_ratio,
+          ld.leveraged_token_collateral_per_leveraged_token as collateral_per_token,
+          ld.leveraged_token_debt_per_leveraged_token as debt_per_token,
           vd.vault_total_available_cash,
           vd.vault_total_outstanding_debt,
           vd.vault_max_total_deposit,
