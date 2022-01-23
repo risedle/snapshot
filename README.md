@@ -63,3 +63,5 @@ Run the following command to deploy:
     flyctl deploy --app snapshot-kovan-workers --config snapshot-kovan-workers.toml .
 
     flyctl deploy --app snapshot-kovan-api --config snapshot-kovan-api.toml .
+
+Don't forget to sync schema for the first deployment.

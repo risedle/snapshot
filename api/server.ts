@@ -16,6 +16,7 @@ import { getLeveragedTokensMonthly } from "./getLeveragedTokensMonthly";
 import { getLeveragedTokensThreeMonths } from "./getLeveragedTokensThreeMonths";
 import { getLeveragedTokensYearly } from "./getLeveragedTokensYearly";
 import { getMarketsData } from "./getMarketsData";
+import { getMarketData } from "./getMarketData";
 
 // create typeorm connection
 createConnection().then((connection) => {
@@ -25,7 +26,7 @@ createConnection().then((connection) => {
     app.use(morgan("combined"));
     app.use(
         cors({
-            origin: ["https://.risedle.com", "http://localhost:6006", "http://localhost:3000"],
+            origin: ["https://risedle.com", "http://localhost:6006", "http://localhost:3000"],
         })
     );
 
@@ -99,6 +100,11 @@ createConnection().then((connection) => {
 
     app.get("/v1/markets", async function (req: Request, res: Response) {
         const results = await getMarketsData(connection);
+        return res.send(results);
+    });
+
+    app.get("/v1/markets/:id", async function (req: Request, res: Response) {
+        const results = await getMarketData(connection, req.params.id);
         return res.send(results);
     });
 
