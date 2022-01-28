@@ -1,4 +1,4 @@
-import { ethers, providers } from "ethers";
+import { ethers } from "ethers";
 import dotenv from "dotenv";
 import cron from "node-cron";
 import * as Sentry from "@sentry/node";
@@ -29,15 +29,31 @@ const leveragedTokensData = {
             },
         },
     },
+    arbitrum: {
+        // rvETHUSDC
+        "0xf7EDB240DbF7BBED7D321776AFe87D1FBcFD0A94": {
+            // ETHRISE
+            "0x46D06cf8052eA6FdbF71736AF33eD23686eA1452": {
+                collateralDecimals: 18, // WETH
+                debtDecimals: 6, // USDC
+            },
+        },
+    },
 };
 
-const vaultTarget = { kovan: ["0x42B6BAE111D9300E19F266Abf58cA215f714432c"] };
+const vaultTarget = { kovan: ["0x42B6BAE111D9300E19F266Abf58cA215f714432c"], arbitrum: ["0xf7EDB240DbF7BBED7D321776AFe87D1FBcFD0A94"] };
 
 const leveragedTokenTarget = {
     kovan: [
         {
             vault: "0x42B6BAE111D9300E19F266Abf58cA215f714432c",
             leveragedToken: "0xc4676f88663360155c2bc6d2A482E34121a50b3b",
+        },
+    ],
+    arbitrum: [
+        {
+            vault: "0xf7EDB240DbF7BBED7D321776AFe87D1FBcFD0A94",
+            leveragedToken: "0x46D06cf8052eA6FdbF71736AF33eD23686eA1452",
         },
     ],
 };
@@ -49,6 +65,7 @@ createConnection()
         const network = process.env.NETWORK;
 
         const vaultTask = cron.schedule("*/5 * * * *", async () => {
+            console.log("Vault task ....");
             for (let i = 0; i < vaultTarget[network].length; i++) {
                 const vaultContractAddress = vaultTarget[network][i];
                 try {
@@ -62,6 +79,7 @@ createConnection()
             }
         });
         const leveragedTokenTask = cron.schedule("*/5 * * * *", async () => {
+            console.log("Leveraged token task ....");
             for (let i = 0; i < leveragedTokenTarget[network].length; i++) {
                 const vault = leveragedTokenTarget[network][i].vault;
                 const token = leveragedTokenTarget[network][i].leveragedToken;
