@@ -1,0 +1,13 @@
+app = "snapshot-arbitrum-workers"
+
+kill_signal = "SIGTERM"
+kill_timeout = 5
+processes = []
+
+[env]
+  SENTRY_APP_NAME="snapshot-arbitrum-workers"
+  NETWORK="arbitrum"
+
+[experimental]
+cmd = ["node", "-r", "ts-node/register", "workers/cron.ts"]
+entrypoint = ["node", "-r", "ts-node/register", "workers/cron.ts"]
