@@ -14,6 +14,22 @@ We use [TypeORM](https://typeorm.io/) to manage the database.
 
 Please read [PostgreSQL](./postgresql/README.md) for more details on how to connect the database to your local machine.
 
+### Setting up new chain
+
+1. Create new database (e.g `snapshot_arbitrum`)
+2. Create new `.env` based on `.env.example`
+3. Run database sync `npm run typeorm schema:sync`
+4. Edit the `worker/cron.ts` with your config, try run locally first.
+5. Create new app `flyctl launch` with specified name (e.g. `snapshot-arbitrum-workers`)
+6. Create the secret `flyctl secrets --app snapshot-arbitrum-workers set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"`
+7. Create new fly config (e.g. `snapshot-arbitrum-workers.toml`)
+8. Deploy the app `flyctl deploy --app snapshot-arbitrum-workers --config snapshot-arbitrum-workers.toml`
+9. Create new app for the snapshot-api `flyctl launch` with name `snapshot-arbitrum-api`
+10. Create new secret `flyctl secrets --app snapshot-arbitrum-api set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"`
+11. Create new fly config (e.g `snapshot-arbitrum-api.toml`)
+12. Deploy the app `flyctl deploy --app snapshot-arbitrum-api --config snapshot-arbitrum-api.toml`
+13. Setup custom domain name for the API and done.
+
 ### Updating Schema
 
 Copy `.env.example` to `.env` and edit the content.
