@@ -43,4 +43,7 @@ export class LeveragedTokenSnapshot {
 
     @Column({ type: "float", nullable: true })
     collateralPrice: number;
+
+    @Column({ type: "int", nullable: true })
+    blockNumber: number;
 }
