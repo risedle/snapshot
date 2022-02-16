@@ -6,7 +6,7 @@ This is monorepo of Risedle's Snapshot services.
 
 -   [PostgreSQL](./postgresql): Database that store all snapshot data.
 -   [Snapshot Workers](./workers): Service that collect data from Vault contract
--   [Snapshot API](./snapshot-api): REST API service that serve data collected by the workers.
+-   [Snapshot API](./api): REST API service that serve data collected by the workers.
 
 ## Database
 
