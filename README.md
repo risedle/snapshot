@@ -18,7 +18,7 @@ Please read [PostgreSQL](./postgresql/README.md) for more details on how to conn
 
 1. Create new database (e.g `snapshot_arbitrum`)
 2. Create new `.env` based on `.env.example`
-3. Run database sync `npm run typeorm schema:sync`
+3. Run database migration `npm run typeorm migration:run`
 4. Edit the `worker/cron.ts` with your config, try run locally first.
 5. Create new app `flyctl launch` with specified name (e.g. `snapshot-arbitrum-workers`)
 6. Create the secret `flyctl secrets --app snapshot-arbitrum-workers set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"`
