@@ -28,4 +28,7 @@ export class VaultSnapshot {
 
     @Column({ type: "float", nullable: true })
     maxTotalDeposit: number;
+
+    @Column({ type: "int", nullable: true })
+    blockNumber: number;
 }

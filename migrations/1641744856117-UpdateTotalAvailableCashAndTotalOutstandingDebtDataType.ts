@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class UpdateTotalAvailableCashAndTotalOutstandingDebtDataType1641744856117 implements MigrationInterface {
-    name = 'UpdateTotalAvailableCashAndTotalOutstandingDebtDataType1641744856117'
+    name = "UpdateTotalAvailableCashAndTotalOutstandingDebtDataType1641744856117";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "vault_snapshot" DROP COLUMN "totalAvailableCash"`);
@@ -16,5 +16,4 @@ export class UpdateTotalAvailableCashAndTotalOutstandingDebtDataType164174485611
         await queryRunner.query(`ALTER TABLE "vault_snapshot" DROP COLUMN "totalAvailableCash"`);
         await queryRunner.query(`ALTER TABLE "vault_snapshot" ADD "totalAvailableCash" integer NOT NULL`);
     }
-
 }

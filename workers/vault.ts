@@ -43,6 +43,10 @@ async function snapshot(vaultContractAddress: string, provider: ethers.providers
     const maxTotalDepositFloat = parseFloat(ethers.utils.formatUnits(maxTotalDeposit, 6));
     console.log("DEBUG: maxTotalDepositFloat", maxTotalDepositFloat);
 
+    // Get blocknumber
+    const blockNumber = await provider.getBlockNumber();
+    console.log("DEBUG: blockNumber", blockNumber);
+
     // Connect to postgresql
     const repository = connection.getRepository(VaultSnapshot);
 
@@ -54,6 +58,7 @@ async function snapshot(vaultContractAddress: string, provider: ethers.providers
     snapshot.totalOutstandingDebt = totalOutstandingDebtFloat;
     snapshot.utilizationRate = utilizationRatePercentage;
     snapshot.maxTotalDeposit = maxTotalDepositFloat;
+    snapshot.blockNumber = blockNumber;
     await repository.save(snapshot);
 }
 
