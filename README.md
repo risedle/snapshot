@@ -71,13 +71,17 @@ Create new app:
 Set the secrets:
 
     flyctl secrets --app snapshot-kovan-workers set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
-
     flyctl secrets --app snapshot-kovan-api set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
+
+    flyctl secrets --app snapshot-arbitrum-workers set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
+    flyctl secrets --app snapshot-arbitrum-api set RPC_URL="here" SENTRY_DSN="here" POSTGRES_URL="here"
 
 Run the following command to deploy:
 
     flyctl deploy --app snapshot-kovan-workers --config snapshot-kovan-workers.toml .
-
     flyctl deploy --app snapshot-kovan-api --config snapshot-kovan-api.toml .
+
+    flyctl deploy --app snapshot-arbitrum-workers --config snapshot-arbitrum-workers.toml .
+    flyctl deploy --app snapshot-arbitrum-api --config snapshot-arbitrum-api.toml .
 
 Don't forget to sync schema for the first deployment.
