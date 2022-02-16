@@ -56,6 +56,10 @@ async function snapshot(vaultContractAddress: string, leveragedTokenContractAddr
     const outstandingDebt = parseFloat(ethers.utils.formatUnits(outstandingDebtBN, debtDecimals));
     console.log("DEBUG: outstandingDebt", outstandingDebt);
 
+    // Get blocknumber
+    const blockNumber = await provider.getBlockNumber();
+    console.log("DEBUG: blockNumber", blockNumber);
+
     // Connect to postgresql
     const repository = connection.getRepository(LeveragedTokenSnapshot);
 
@@ -72,6 +76,7 @@ async function snapshot(vaultContractAddress: string, leveragedTokenContractAddr
     snapshot.totalPendingFees = totalPendingFees;
     snapshot.outstandingDebt = outstandingDebt;
     snapshot.collateralPrice = collateralPrice;
+    snapshot.blockNumber = blockNumber;
     await repository.save(snapshot);
 }
 
