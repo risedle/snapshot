@@ -4,5 +4,5 @@
     "semi": true,
     "singleQuote": false,
     "proseWrap": "always",
-    "printWidth": 500
+    "printWidth": 80
 }

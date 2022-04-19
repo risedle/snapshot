@@ -24,10 +24,13 @@ export const ERC20ABI = new ethers.utils.Interface(["function totalSupply() exte
 export const OracleABI = new ethers.utils.Interface(["function getPrice() external view returns (uint256)"]);
 
 // Source: https://github.com/risedle/flt/blob/main/src/interfaces/IRiseToken.sol
-export const RiseTokenABI = new ethers.utils.Interface([
+export const RiseTokenABI = [
     "function collateralPerShare() external view returns (uint256)",
     "function debtPerShare() external view returns (uint256)",
     "function value(uint256 _shares, address _quote) external view returns (uint256)",
     "function nav() external view returns (uint256)",
-    "function leverageRatio() external view returns (uint256)"
-]);
+    "function leverageRatio() external view returns (uint256)",
+    "function totalSupply() external view returns (uint256)",
+    "function totalCollateral() external view returns (uint256)",
+    "function totalDebt() external view returns (uint256)"
+];
