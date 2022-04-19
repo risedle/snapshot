@@ -6,6 +6,7 @@ import { createConnection } from "typeorm";
 
 import vault from "./vault";
 import leveragedToken from "./leveragedToken";
+import riseToken from "./riseToken";
 
 // Load environment variables
 dotenv.config();
@@ -58,6 +59,16 @@ const leveragedTokenTarget = {
     ],
 };
 
+const riseTokens = [
+    {
+        address: "0x00dE155Bc0DA2BeFC10Fe3125A9e4864A13addF4",
+        collateral: "0x8D9bA570D6cb60C7e3e0F31343Efe75AB8E65FB1",
+        cdecimals: 18,
+        debt: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+        ddecimals: 6
+    }
+]
+
 createConnection()
     .then((connection) => {
         // Initialize provider
@@ -94,12 +105,26 @@ createConnection()
                 }
             }
         });
+        const riseTokenTask = cron.schedule("*/1 * * * *", async () => {
+            console.log("Rise Token task ....");
+            for (let token of riseTokens) {
+                try {
+                    console.log("Snapshoting", token.address, "...");
+                    await riseToken.snapshot(token, provider, connection);
+                    console.log("Snapshoting", token.address, "... DONE");
+                } catch (e) {
+                    console.error("Failed to run snapshot", token.address, e);
+                    Sentry.captureException(e);
+                }
+            }
+        });
 
         process.on("SIGTERM", () => {
             console.info("SIGTERM signal received.");
             console.log("Stopping cron job ...");
             vaultTask.stop();
             leveragedTokenTask.stop();
+            riseTokenTask.stop();
             console.log("Cronjob stopped ...");
         });
     })

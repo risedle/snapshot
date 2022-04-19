@@ -1,8 +1,10 @@
 import { BigNumber, ethers } from "ethers";
+import { Contract, Provider } from "ethers-multicall";
 import { Connection } from "typeorm";
-import { LeveragedTokenSnapshot } from "../entities/LeveragedTokenSnapshot";
+import { RiseTokenSnapshot } from "../entities/RiseTokenSnapshot";
 
-import { RiseTokenABI, ERC20ABI, OracleABI } from "./abi";
+// import RiseTokenABI from "./RiseTokenABI.json";
+import { RiseTokenABI } from "./abi";
 
 export type RiseToken = {
     address: string,
@@ -15,70 +17,84 @@ export type RiseToken = {
 async function snapshot(
     token: RiseToken,
     provider: ethers.providers.JsonRpcProvider,
-    connection: Connection
+    dbConnection: Connection
 ) {
+    // Initialize Multicall provider
+    const multicallProvider = new Provider(provider);
+    await multicallProvider.init();
+
     // Initialize the contract
-    const riseToken = new ethers.Contract(
+    const riseToken = new Contract(
         token.address,
-        RiseTokenABI,
-        provider
+        RiseTokenABI
     );
 
-    // Get collateral per share
-    const cpsBN: BigNumber = await riseToken.collateralPerShare();
+    // RPC Calls
+    const cpsCall = riseToken.collateralPerShare();
+    const dpsCall = riseToken.debtPerShare();
+    const lrCall  = riseToken.leverageRatio();
+    const navCall = riseToken.nav();
+    const totalSupplyCall = riseToken.totalSupply();
+    const totalCollateralCall = riseToken.totalCollateral();
+    const totalDebtCall = riseToken.totalDebt();
+
+    // Run the multicall
+    const [
+        cpsBN,
+        dpsBN,
+        lrBN,
+        navBN,
+        totalSupplyBN,
+        totalCollateralBN,
+        totalDebtBN
+    ] = await multicallProvider.all([
+        cpsCall,
+        dpsCall,
+        lrCall,
+        navCall,
+        totalSupplyCall,
+        totalCollateralCall,
+        totalDebtCall
+    ])
+
+    // Parse the BigNumber
     const cps = parseFloat(ethers.utils.formatUnits(cpsBN, token.cdecimals));
     console.log("DEBUG: Collateral per share", cps);
 
-    // Get debt per share
-    const dpsBN: BigNumber = await riseToken.debtPerShare();
     const dps = parseFloat(ethers.utils.formatUnits(dpsBN, token.ddecimals));
     console.log("DEBUG: Debt per share", dps);
 
-    // Get leverage ratio in ether
-    const lrBN: BigNumber = await riseToken.leverageRatio();
     const lr = parseFloat(ethers.utils.formatEther(lrBN));
     console.log("DEBUG: lr", lr);
 
-    // Get nav price
-    const navBN: BigNumber = await riseTokenVaultContract.getNAV(leveragedTokenContractAddress);
-    const nav = parseFloat(ethers.utils.formatUnits(navBN, debtDecimals));
+    const nav = parseFloat(ethers.utils.formatEther(navBN));
     console.log("DEBUG: nav", nav);
 
-    // Get token metadata
-    const metadata = await riseTokenVaultContract.getMetadata(leveragedTokenContractAddress);
-    const maxTotalCollateral = parseFloat(ethers.utils.formatUnits(metadata.maxTotalCollateral, collateralDecimals));
-    console.log("DEBUG: maxTotalCollateral", maxTotalCollateral);
-
-    // Get total supply
-    const totalSupplyBN: BigNumber = await leveragedTokenContract.totalSupply();
-    const totalSupply = parseFloat(ethers.utils.formatUnits(totalSupplyBN, collateralDecimals));
+    const totalSupply = parseFloat(ethers.utils.formatUnits(totalSupplyBN, token.cdecimals));
     console.log("DEBUG: totalSupply", totalSupply);
 
-    // Get outstanding debt
-    const outstandingDebtBN: BigNumber = await riseTokenVaultContract.getOutstandingDebt(leveragedTokenContractAddress);
-    const outstandingDebt = parseFloat(ethers.utils.formatUnits(outstandingDebtBN, debtDecimals));
-    console.log("DEBUG: outstandingDebt", outstandingDebt);
+    const totalCollateral = parseFloat(ethers.utils.formatUnits(totalCollateralBN, token.cdecimals));
+    console.log("DEBUG: totalCollateral", totalCollateral);
+
+    const totalDebt = parseFloat(ethers.utils.formatUnits(totalDebtBN, token.ddecimals));
+    console.log("DEBUG: totalDebt", totalDebt);
 
     // Get blocknumber
     const blockNumber = await provider.getBlockNumber();
     console.log("DEBUG: blockNumber", blockNumber);
 
     // Connect to postgresql
-    const repository = connection.getRepository(LeveragedTokenSnapshot);
+    const repository = dbConnection.getRepository(RiseTokenSnapshot);
 
-    const snapshot = new LeveragedTokenSnapshot();
-    snapshot.contractAddress = leveragedTokenContractAddress;
-    snapshot.collateralPerLeveragedToken = collateralPerLeveragedToken;
-    snapshot.debtPerLeveragedToken = debtPerLeveragedToken;
-    snapshot.leverageRatio = leverageRatio;
+    const snapshot = new RiseTokenSnapshot();
+    snapshot.address = token.address;
+    snapshot.cps = cps;
+    snapshot.dps = dps;
+    snapshot.lr = lr;
     snapshot.nav = nav;
-    snapshot.vaultContractAddress = vaultContractAddress;
     snapshot.totalSupply = totalSupply;
-    snapshot.maxTotalCollateral = maxTotalCollateral;
-    snapshot.totalCollateralPlusFee = totalCollateralPlusFee;
-    snapshot.totalPendingFees = totalPendingFees;
-    snapshot.outstandingDebt = outstandingDebt;
-    snapshot.collateralPrice = collateralPrice;
+    snapshot.totalCollateral = totalCollateral;
+    snapshot.totalDebt = totalDebt;
     snapshot.blockNumber = blockNumber;
     await repository.save(snapshot);
 }
