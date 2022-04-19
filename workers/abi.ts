@@ -29,5 +29,5 @@ export const RiseTokenABI = new ethers.utils.Interface([
     "function debtPerShare() external view returns (uint256)",
     "function value(uint256 _shares, address _quote) external view returns (uint256)",
     "function nav() external view returns (uint256)",
-    "funtion leverageRatio() external view returns (uint256)"
+    "function leverageRatio() external view returns (uint256)"
 ]);
