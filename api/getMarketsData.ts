@@ -70,9 +70,18 @@ export const getMarketsData = async (conn: Connection) => {
     `);
 
     // Get total AUM = sum of all market cap
-    const totalAUM = markets.map((market) => market.leveraged_token_market_cap).reduce((total, marketCap) => total + marketCap, 0);
+    const totalAUM = markets
+        .map((market) => market.leveraged_token_market_cap)
+        .reduce((total, marketCap) => total + marketCap, 0);
     // NOTE: This TVL calculation assume that one token one vault; TVL will inflated when there is one vault with two tokens
-    const totalTVL = markets.map((market) => market.leveraged_token_market_cap + market.vault_total_available_cash + market.vault_total_outstanding_debt).reduce((total, tvlPerMarket) => total + tvlPerMarket, 0);
+    const totalTVL = markets
+        .map(
+            (market) =>
+                market.leveraged_token_market_cap +
+                market.vault_total_available_cash +
+                market.vault_total_outstanding_debt
+        )
+        .reduce((total, tvlPerMarket) => total + tvlPerMarket, 0);
     return {
         aum: totalAUM,
         tvl: totalTVL,

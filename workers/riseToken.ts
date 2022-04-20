@@ -7,12 +7,12 @@ import { RiseTokenSnapshot } from "../entities/RiseTokenSnapshot";
 import { RiseTokenABI } from "./abi";
 
 export type RiseToken = {
-    address: string,
-    collateral: string,
-    cdecimals: number,
-    debt: string,
-    ddecimals: number,
-}
+    address: string;
+    collateral: string;
+    cdecimals: number;
+    debt: string;
+    ddecimals: number;
+};
 
 async function snapshot(
     token: RiseToken,
@@ -24,15 +24,12 @@ async function snapshot(
     await multicallProvider.init();
 
     // Initialize the contract
-    const riseToken = new Contract(
-        token.address,
-        RiseTokenABI
-    );
+    const riseToken = new Contract(token.address, RiseTokenABI);
 
     // RPC Calls
     const cpsCall = riseToken.collateralPerShare();
     const dpsCall = riseToken.debtPerShare();
-    const lrCall  = riseToken.leverageRatio();
+    const lrCall = riseToken.leverageRatio();
     const navCall = riseToken.nav();
     const totalSupplyCall = riseToken.totalSupply();
     const totalCollateralCall = riseToken.totalCollateral();
@@ -46,7 +43,7 @@ async function snapshot(
         navBN,
         totalSupplyBN,
         totalCollateralBN,
-        totalDebtBN
+        totalDebtBN,
     ] = await multicallProvider.all([
         cpsCall,
         dpsCall,
@@ -54,8 +51,8 @@ async function snapshot(
         navCall,
         totalSupplyCall,
         totalCollateralCall,
-        totalDebtCall
-    ])
+        totalDebtCall,
+    ]);
 
     // Parse the BigNumber
     const cps = parseFloat(ethers.utils.formatUnits(cpsBN, token.cdecimals));
@@ -70,13 +67,19 @@ async function snapshot(
     const nav = parseFloat(ethers.utils.formatEther(navBN));
     console.log("DEBUG: nav", nav);
 
-    const totalSupply = parseFloat(ethers.utils.formatUnits(totalSupplyBN, token.cdecimals));
+    const totalSupply = parseFloat(
+        ethers.utils.formatUnits(totalSupplyBN, token.cdecimals)
+    );
     console.log("DEBUG: totalSupply", totalSupply);
 
-    const totalCollateral = parseFloat(ethers.utils.formatUnits(totalCollateralBN, token.cdecimals));
+    const totalCollateral = parseFloat(
+        ethers.utils.formatUnits(totalCollateralBN, token.cdecimals)
+    );
     console.log("DEBUG: totalCollateral", totalCollateral);
 
-    const totalDebt = parseFloat(ethers.utils.formatUnits(totalDebtBN, token.ddecimals));
+    const totalDebt = parseFloat(
+        ethers.utils.formatUnits(totalDebtBN, token.ddecimals)
+    );
     console.log("DEBUG: totalDebt", totalDebt);
 
     // Get blocknumber

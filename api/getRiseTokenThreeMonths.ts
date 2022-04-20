@@ -4,7 +4,7 @@ import { RiseTokenSnapshot } from "../entities/RiseTokenSnapshot";
 export const getRiseTokenThreeMonths = async (
     conn: Connection,
     tokenAddress: string
-)=> {
+) => {
     const results = await conn
         .createQueryBuilder()
         .select([
@@ -13,7 +13,7 @@ export const getRiseTokenThreeMonths = async (
             "data.dps",
             "data.lr",
             "data.nav",
-            "data.block_number"
+            "data.block_number",
         ])
         .from((subQuery) => {
             return subQuery
@@ -24,7 +24,8 @@ export const getRiseTokenThreeMonths = async (
                     "snapshot.lr as lr",
                     "snapshot.nav as nav",
                     "snapshot.blockNumber as block_number",
-                    "date_trunc('hour', timestamp) as timestamp", "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number"
+                    "date_trunc('hour', timestamp) as timestamp",
+                    "row_number() over (partition by date_trunc('hour', timestamp) order by timestamp desc) as row_number",
                 ])
                 .from(RiseTokenSnapshot, "snapshot")
                 .where("snapshot.address = :address", {

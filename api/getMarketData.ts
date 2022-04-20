@@ -1,6 +1,9 @@
 import { Connection } from "typeorm";
 
-export const getMarketData = async (conn: Connection, leveragedTokenAddress: string) => {
+export const getMarketData = async (
+    conn: Connection,
+    leveragedTokenAddress: string
+) => {
     const market = await conn.query(
         `
     WITH latest_data AS (
