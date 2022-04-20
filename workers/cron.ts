@@ -105,7 +105,7 @@ createConnection()
                 }
             }
         });
-        const riseTokenTask = cron.schedule("*/1 * * * *", async () => {
+        const riseTokenTask = cron.schedule("*/5 * * * *", async () => {
             console.log("Rise Token task ....");
             for (let token of riseTokens) {
                 try {
