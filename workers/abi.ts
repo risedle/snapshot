@@ -19,9 +19,13 @@ export const VaultABI = new ethers.utils.Interface([
     "function getOutstandingDebt(address token) external view returns (uint256)",
 ]);
 
-export const ERC20ABI = new ethers.utils.Interface(["function totalSupply() external view returns (uint256)"]);
+export const ERC20ABI = new ethers.utils.Interface([
+    "function totalSupply() external view returns (uint256)",
+]);
 
-export const OracleABI = new ethers.utils.Interface(["function getPrice() external view returns (uint256)"]);
+export const OracleABI = new ethers.utils.Interface([
+    "function getPrice() external view returns (uint256)",
+]);
 
 // Source: https://github.com/risedle/flt/blob/main/src/interfaces/IRiseToken.sol
 export const RiseTokenABI = [
@@ -32,5 +36,5 @@ export const RiseTokenABI = [
     "function leverageRatio() external view returns (uint256)",
     "function totalSupply() external view returns (uint256)",
     "function totalCollateral() external view returns (uint256)",
-    "function totalDebt() external view returns (uint256)"
+    "function totalDebt() external view returns (uint256)",
 ];

@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+} from "typeorm";
 
 @Entity()
 export class RiseTokenSnapshot {
@@ -23,13 +28,13 @@ export class RiseTokenSnapshot {
     @Column({ type: "float" })
     nav: number;
 
-    @Column({ type: "float"})
+    @Column({ type: "float" })
     totalSupply: number;
 
-    @Column({ type: "float"})
+    @Column({ type: "float" })
     totalCollateral: number;
 
-    @Column({ type: "float"})
+    @Column({ type: "float" })
     totalDebt: number;
 
     @Column({ type: "int", nullable: true })

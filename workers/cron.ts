@@ -42,7 +42,10 @@ const leveragedTokensData = {
     },
 };
 
-const vaultTarget = { kovan: ["0x42B6BAE111D9300E19F266Abf58cA215f714432c"], arbitrum: ["0xf7EDB240DbF7BBED7D321776AFe87D1FBcFD0A94"] };
+const vaultTarget = {
+    kovan: ["0x42B6BAE111D9300E19F266Abf58cA215f714432c"],
+    arbitrum: ["0xf7EDB240DbF7BBED7D321776AFe87D1FBcFD0A94"],
+};
 
 const leveragedTokenTarget = {
     kovan: [
@@ -65,14 +68,16 @@ const riseTokens = [
         collateral: "0x8D9bA570D6cb60C7e3e0F31343Efe75AB8E65FB1",
         cdecimals: 18,
         debt: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-        ddecimals: 6
-    }
-]
+        ddecimals: 6,
+    },
+];
 
 createConnection()
     .then((connection) => {
         // Initialize provider
-        const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+        const provider = new ethers.providers.JsonRpcProvider(
+            process.env.RPC_URL
+        );
         const network = process.env.NETWORK;
 
         const vaultTask = cron.schedule("*/5 * * * *", async () => {
@@ -81,10 +86,22 @@ createConnection()
                 const vaultContractAddress = vaultTarget[network][i];
                 try {
                     console.log("Snapshoting", vaultContractAddress, "...");
-                    await vault.snapshot(vaultContractAddress, provider, connection);
-                    console.log("Snapshoting", vaultContractAddress, "... DONE");
+                    await vault.snapshot(
+                        vaultContractAddress,
+                        provider,
+                        connection
+                    );
+                    console.log(
+                        "Snapshoting",
+                        vaultContractAddress,
+                        "... DONE"
+                    );
                 } catch (e) {
-                    console.error("Failed to run snapshot", vaultContractAddress, e);
+                    console.error(
+                        "Failed to run snapshot",
+                        vaultContractAddress,
+                        e
+                    );
                     Sentry.captureException(e);
                 }
             }
@@ -97,7 +114,14 @@ createConnection()
                 const data = leveragedTokensData[network][vault][token];
                 try {
                     console.log("Snapshoting", vault, token, "...");
-                    await leveragedToken.snapshot(vault, token, data.collateralDecimals, data.debtDecimals, provider, connection);
+                    await leveragedToken.snapshot(
+                        vault,
+                        token,
+                        data.collateralDecimals,
+                        data.debtDecimals,
+                        provider,
+                        connection
+                    );
                     console.log("Snapshoting", vault, token, "... DONE");
                 } catch (e) {
                     console.error("Failed to run snapshot", vault, token, e);
