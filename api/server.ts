@@ -18,6 +18,9 @@ import { getLeveragedTokensYearly } from "./getLeveragedTokensYearly";
 import { getMarketsData } from "./getMarketsData";
 import { getMarketData } from "./getMarketData";
 
+// Rise Tokens
+import { getRiseTokenThreeMonths } from "./getRiseTokenThreeMonths";
+
 // create typeorm connection
 createConnection().then((connection) => {
     // create and setup express app
@@ -105,6 +108,12 @@ createConnection().then((connection) => {
 
     app.get("/v1/markets/:id", async function (req: Request, res: Response) {
         const results = await getMarketData(connection, req.params.id);
+        return res.send(results);
+    });
+
+    // Get 3 months data of rise tokens
+    app.get("/v1/riseTokens/3months/:id", async function (req: Request, res: Response) {
+        const results = await getRiseTokenThreeMonths(connection, req.params.id);
         return res.send(results);
     });
 
